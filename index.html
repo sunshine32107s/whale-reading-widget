@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Reading Stats Widget</title>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
-  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
   <style>
     * {
       box-sizing: border-box;
@@ -14,23 +11,25 @@
       padding: 0;
     }
     body {
-      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
-        system-ui, sans-serif;
+      font-family: "Pretendard", sans-serif;
       background: transparent;
       display: flex;
-      align-items: center;
       justify-content: center;
-      height: 100vh;
-      color: #e9f5ff;
+      align-items: flex-start;
+      padding: 10px;
+      overflow: hidden; /* 물결 효과가 바깥으로 나가지 않도록 */
     }
     .card {
       width: 280px;
+      min-height: 160px;
       border-radius: 18px;
-      padding: 16px 18px 14px;
+      padding: 20px;
       background: radial-gradient(circle at top left, #3fa4ff, #151b3f 65%, #050814);
       box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55);
       position: relative;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: #e9f5ff;
     }
     .title {
       font-size: 13px;
@@ -39,72 +38,134 @@
     .subtitle {
       font-size: 11px;
       opacity: 0.75;
-      margin-top: 2px;
+      margin-top: 4px;
     }
     .big-number {
-      margin-top: 10px;
-      font-size: 26px;
-      font-weight: 600;
+      margin: 15px 0;
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
     }
     .big-number span {
-      font-size: 14px;
+      font-size: 16px;
       opacity: 0.8;
       margin-left: 4px;
     }
     .years {
-      margin-top: 10px;
-      font-size: 12px;
-      line-height: 1.6;
+      margin-top: 5px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      line-height: 1.8;
+      flex-grow: 1; /* 남은 공간을 채우도록 */
     }
     .year-row {
       display: flex;
       justify-content: space-between;
-      opacity: 0.9;
+      align-items: center; /* 막대 그래프와 정렬 */
+      margin-bottom: 5px;
+      position: relative;
+      height: 20px; /* 각 행의 높이 고정 */
     }
     .year-label {
       color: #b9d8ff;
+      flex-basis: 40px; /* 'YYYY년' 영역 고정 */
+      z-index: 2; /* 막대 그래프 위로 올라오도록 */
     }
     .count-label {
       color: #ffffff;
+      flex-basis: 30px; /* 'NN권' 영역 고정 */
+      text-align: right;
+      z-index: 2;
     }
-    .whale-tag {
-      position: absolute;
-      right: 16px;
-      bottom: 12px;
+    .avg-label {
       font-size: 11px;
-      opacity: 0.85;
+      opacity: 0.8;
+      color: #8bbfff;
+      margin-left: 10px;
+    }
+
+    /* 막대 그래프 컨테이너 */
+    .bar-container {
+      position: absolute;
+      left: 75px; /* 연도/권수 텍스트 사이에 배치 */
+      right: 40px;
+      height: 16px; /* 막대 그래프 자체 높이 */
+      background: rgba(255, 255, 255, 0.08); /* 막대 배경색 */
+      border-radius: 8px;
+      overflow: hidden; /* 물결 효과가 밖으로 나가지 않도록 */
+      z-index: 1; /* 텍스트 아래로 */
+      pointer-events: none; /* 클릭 방지 */
+    }
+
+    /* 막대 그래프 채워지는 부분 (물결 효과) */
+    .bar-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%; /* JS로 변경될 값 */
+      height: 100%;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7ad0ff, #3d8bff); /* 물결 색상 */
+      transition: width 1s ease-out; /* 너비 변화 애니메이션 */
+      overflow: hidden;
+    }
+
+    /* 물결 애니메이션 */
+    .wave {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%; /* 더 길게 만들어서 움직임 */
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2); /* 물결 색상 */
+      border-radius: 40%; /* 둥근 물결 모양 */
+      transform: rotate(-5deg); /* 약간 기울여서 자연스럽게 */
+      animation: wave 3s linear infinite; /* 물결 애니메이션 */
+      opacity: 0.7;
+      z-index: 2;
+    }
+
+    @keyframes wave {
+      0% { transform: translate(-50%, 0) rotate(-5deg); }
+      100% { transform: translate(0, 0) rotate(-5deg); }
+    }
+
+    .whale-tag {
+      margin-top: 20px;
+      align-self: flex-end;
+      font-size: 11px;
+      opacity: 0.8;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
     .whale-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
       background: linear-gradient(135deg, #9ad7ff, #4b8dff);
       box-shadow: 0 0 8px rgba(100, 193, 255, 0.9);
     }
     .error {
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 11px;
       color: #ffb3b3;
-      opacity: 0.9;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="title">오늘까지 완독한 책</div>
-    <div class="subtitle" id="dateText">로딩 중...</div>
+    <div class="subtitle" id="dateText">데이터 불러오는 중...</div>
     <div class="big-number" id="totalCount">- <span>권</span></div>
 
     <div class="years" id="yearStats">
-      <!-- 연도별 통계가 여기에 채워짐 -->
-    </div>
+      </div>
 
     <div class="whale-tag">
       <div class="whale-dot"></div>
-      <span>whale reading</span>
+      <span>고래고래는 다 읽었다</span>
     </div>
 
     <div class="error" id="errorText" style="display: none;"></div>
@@ -118,29 +179,60 @@
       const errEl = document.getElementById("errorText");
 
       try {
-        // TODO: 이 URL을 네가 배포한 서버 주소로 바꿔줘
-        const res = await fetch("https://whale-reading-api.vercel.app/api/reading-stats");
+        // 여기에 본인의 Vercel API 주소를 꼭 넣어주세요!
+        const vercelApiUrl = "https://whale-reading-api.vercel.app/api/reading-stats"; // 💡 이 부분을 본인 주소로 변경
+        const res = await fetch(vercelApiUrl);
         if (!res.ok) throw new Error("API 응답 오류");
 
         const data = await res.json();
-        const { today, totalCompletedCount, yearStats } = data;
+        const { today, totalCompletedCount, yearStats, averageBooksPerYear } = data; // ✅ averageBooksPerYear 추가
 
         dateEl.textContent = `${today} 기준`;
         totalEl.innerHTML = `${totalCompletedCount}<span> 권</span>`;
 
         if (!yearStats || yearStats.length === 0) {
-          yearsEl.textContent = "아직 완독한 책이 없어요 🐋";
-        } else {
-          yearsEl.innerHTML = yearStats
-            .map(
-              (y) => `
+          yearsEl.innerHTML = `
             <div class="year-row">
-              <span class="year-label">${y.year}년</span>
-              <span class="count-label">${y.count}권</span>
+              <span class="year-label">전체 평균</span>
+              <span class="count-label">0권</span>
+              <div class="bar-container"><div class="bar-fill"></div></div>
             </div>
-          `
-            )
-            .join("");
+            <p style="text-align:center; opacity:0.7; margin-top:10px;">아직 완독한 책이 없어요 🐋</p>
+          `;
+        } else {
+          // 최대 완독 권수를 찾아 막대 그래프의 스케일 설정
+          const maxCount = Math.max(...yearStats.map(y => y.count));
+          
+          let yearStatsHtml = yearStats.map(y => {
+            // 막대 그래프 길이 계산 (최대값 대비 비율)
+            const barWidth = (y.count / maxCount) * 100; 
+            return `
+              <div class="year-row">
+                <span class="year-label">${y.year}년</span>
+                <span class="count-label">${y.count}권</span>
+                <div class="bar-container">
+                  <div class="bar-fill" style="width: ${barWidth}%;">
+                    <div class="wave"></div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("");
+
+          // 평균 완독 권수 막대 그래프 추가
+          const avgBarWidth = (averageBooksPerYear / maxCount) * 100; // 평균도 최대값 대비
+          yearsEl.innerHTML = `
+            <div class="year-row" style="margin-bottom: 15px; font-weight: bold; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 5px;">
+              <span class="year-label">전체 평균</span>
+              <span class="count-label">${averageBooksPerYear}권</span>
+              <div class="bar-container">
+                <div class="bar-fill" style="width: ${avgBarWidth}%; background: linear-gradient(135deg, #aedfff, #5cb0ff);">
+                  <div class="wave"></div>
+                </div>
+              </div>
+            </div>
+            ${yearStatsHtml}
+          `;
         }
       } catch (e) {
         console.error(e);
@@ -149,7 +241,6 @@
         dateEl.textContent = "오류 발생";
       }
     }
-
     fetchStats();
   </script>
 </body>
