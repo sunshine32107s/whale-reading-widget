@@ -5,11 +5,7 @@
   <title>Reading Stats Widget</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Pretendard", sans-serif;
       background: transparent;
@@ -69,14 +65,13 @@
       left: 0;
       height: 100%;
       border-radius: 7px;
-      /* 물결이 잘 보이도록 배경색을 기존보다 조금 더 진하게 조정 */
-      background: linear-gradient(135deg, #3d8bff, #1a5bb5); 
+      /* 배경을 아주 진한 남색으로 깔아 물결 색상과 대비시킴 */
+      background: #0d2c5e; 
       transition: width 1.2s ease-out;
       overflow: hidden;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
     }
 
-    /* 물결 애니메이션 가시성 대폭 강화 */
+    /* 물결 자체에 색상을 부여하여 확실히 보이게 함 */
     .wave {
       position: absolute;
       width: 200%;
@@ -84,16 +79,17 @@
       background-image: url('https://svgshare.com/i/157r.svg');
       background-size: 50% 100%;
       background-repeat: repeat-x;
-      /* 물결을 밝게 빛나게 처리 */
-      filter: brightness(1.6) drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
-      opacity: 0.75;
-      animation: waveMove 4s linear infinite;
+      /* 파란색 색감을 입히고 불투명도를 높임 */
+      filter: invert(74%) sepia(59%) saturate(452%) hue-rotate(175deg) brightness(103%) contrast(101%);
+      opacity: 0.9;
+      animation: waveMove 3s linear infinite;
     }
+
+    /* 뒷물결은 더 밝은 하늘색으로 설정 */
     .wave-back {
-      opacity: 0.4;
-      /* 뒷물결 색상에 변화를 주어 입체감 부여 */
-      filter: brightness(1.2) hue-rotate(15deg);
-      animation: waveMove 7s linear infinite reverse;
+      opacity: 0.5;
+      filter: invert(93%) sepia(21%) saturate(1251%) hue-rotate(174deg) brightness(101%) contrast(104%);
+      animation: waveMove 5s linear infinite reverse;
       bottom: 1px;
     }
 
@@ -130,7 +126,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="title">오늘까지 읽은 책</div>
+    <div class="title">오늘까지 완독한 책</div>
     <div class="subtitle" id="dateText">데이터 로딩 중...</div>
     <div class="big-number" id="totalCount">- <span>권</span></div>
 
