@@ -52,7 +52,7 @@
     .bar-container {
       flex-grow: 1;
       height: 14px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.12); /* 배경 빈 바는 살짝 더 밝게 */
       border-radius: 7px;
       margin: 0 10px;
       position: relative;
@@ -65,13 +65,21 @@
       left: 0;
       height: 100%;
       border-radius: 7px;
-      /* 배경을 아주 진한 남색으로 깔아 물결 색상과 대비시킴 */
-      background: #0d2c5e; 
+      background: #3d8bff; /* 기본 채움색: 선명한 파란색 */
+      background: linear-gradient(to bottom, #7ad0ff 0%, #3d8bff 100%);
       transition: width 1.2s ease-out;
       overflow: hidden;
     }
 
-    /* 물결 자체에 색상을 부여하여 확실히 보이게 함 */
+    /* 🌊 물결 핵심 수정 부분: 흰색 반투명 오버레이 */
+    .wave-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
     .wave {
       position: absolute;
       width: 200%;
@@ -79,18 +87,15 @@
       background-image: url('https://svgshare.com/i/157r.svg');
       background-size: 50% 100%;
       background-repeat: repeat-x;
-      /* 파란색 색감을 입히고 불투명도를 높임 */
-      filter: invert(74%) sepia(59%) saturate(452%) hue-rotate(175deg) brightness(103%) contrast(101%);
-      opacity: 0.9;
+      /* 필터 대신 단순 불투명도 조절: 흰색 물결이 파란색 위를 덮음 */
+      opacity: 0.6;
       animation: waveMove 3s linear infinite;
     }
 
-    /* 뒷물결은 더 밝은 하늘색으로 설정 */
     .wave-back {
-      opacity: 0.5;
-      filter: invert(93%) sepia(21%) saturate(1251%) hue-rotate(174deg) brightness(101%) contrast(104%);
+      opacity: 0.3;
+      top: 1px;
       animation: waveMove 5s linear infinite reverse;
-      bottom: 1px;
     }
 
     @keyframes waveMove {
@@ -126,7 +131,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="title">오늘까지 완독한 책</div>
+    <div class="title">오늘까지 읽은 책</div>
     <div class="subtitle" id="dateText">데이터 로딩 중...</div>
     <div class="big-number" id="totalCount">- <span>권</span></div>
 
