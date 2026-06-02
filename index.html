@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Reading Stats Widget - Neon Blue Set</title>
+  <title>Reading Stats Widget - Balanced Set</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,15 +14,13 @@
       padding: 10px;
     }
     
-    /* 1. 직전 주제 위젯과 크기 및 배경 색감 완벽 통일 (세트 매칭) */
+    /* 1. 카드 프레임 설정 */
     .card {
-      width: 280px; /* 원래 카운트 위젯 고유의 컴팩트 가로폭 */
-      height: 380px; /* 주제 위젯과 나란히 두었을 때 밸런스가 맞는 세로 높이 */
+      width: 280px; 
+      height: 380px; 
       border-radius: 20px;
       padding: 24px;
-      /* 🌌 직전 주제 위젯과 완벽히 일치하는 화사한 네온 블루 그라데이션 */
       background: linear-gradient(135deg, #6bb5ff 0%, #1c52d9 60%, #0d2873 100%);
-      /* 🌫️ 부담스럽지 않게 보정했던 은은한 푸른빛 그림자 */
       box-shadow: 0 10px 25px rgba(13, 40, 115, 0.2); 
       position: relative;
       display: flex;
@@ -43,15 +41,15 @@
     }
     .big-number span { font-size: 16px; font-weight: 500; opacity: 0.8; margin-left: 3px; }
     
-    /* 2. 연도별 차트 리스트 영역 */
+    /* 2. 연도별 차트 리스트 영역 (🔥 간격 밸런스 수정) */
     .years-container {
       margin-top: 10px;
-      padding-top: 12px;
+      padding-top: 14px;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       flex-direction: column;
       gap: 12px;
-      flex-grow: 1;
+      /* 하단 고래 태그를 억지로 밀어내지 않도록 자동 높이 설정 */
     }
 
     .year-row {
@@ -61,7 +59,6 @@
       white-space: nowrap;
     }
     
-    /* 연도 라벨 선명도 조절 */
     .year-label {
       font-size: 12px;
       color: #e6f2ff;
@@ -70,18 +67,18 @@
       flex-shrink: 0;
     }
 
-    /* 🌊 이미지 image_a82ba1.png의 게이지 바 트랙 완벽 재현 */
+    /* 게이지 바 트랙 */
     .bar-container {
       flex-grow: 1;
       height: 12px;
-      background: rgba(255, 255, 255, 0.12); /* 비어있는 바 트랙 */
+      background: rgba(255, 255, 255, 0.12); 
       border-radius: 6px;
       margin: 0 12px;
       position: relative;
       overflow: hidden;
     }
 
-    /* 이미지 image_a82ba1.png의 은은하고 화사한 파란색 채움 그라데이션 */
+    /* 게이지 바 채움 */
     .bar-fill {
       position: absolute;
       top: 0;
@@ -92,7 +89,6 @@
       transition: width 1s ease-out;
     }
 
-    /* 직전 버전에서 마음에 들어 하셨던 선명한 두께 600의 권 수 */
     .count-label {
       font-size: 11px;
       color: #ffffff;
@@ -102,9 +98,10 @@
       flex-shrink: 0;
     }
 
-    /* 3. 고래고래 태그 최하단 고정 */
+    /* 3. 🔥 [하단 여백 보정] 고래고래 태그 간격 최적화 */
     .whale-tag {
-      margin-top: 4px;
+      margin-top: auto; /* 연도별 리스트가 끝난 지점 다음에 유연하게 안착 */
+      padding-top: 10px; /* 리스트와의 최소 안전거리 확보 */
       align-self: flex-end;
       font-size: 10px;
       opacity: 0.8;
@@ -125,12 +122,10 @@
 
   <div class="card">
     <div class="title">오늘까지 읽은 책</div>
-    <!-- 🗓️ 요청하셨던 YYYY-MM-DD 하이픈 포맷 적용 -->
     <div class="subtitle" id="dateText">0000-00-00 기준</div>
     
     <div class="big-number" id="totalCount">-<span>권</span></div>
 
-    <!-- 연도별 게이지가 채워질 공간 -->
     <div class="years-container" id="yearStats"></div>
 
     <div class="whale-tag">
@@ -140,7 +135,6 @@
   </div>
 
   <script>
-    // 오늘 날짜 포맷팅 (YYYY-MM-DD)
     function setTodayDate() {
       const dateEl = document.getElementById("dateText");
       const now = new Date();
@@ -155,12 +149,10 @@
       const yearsEl = document.getElementById("yearStats");
 
       try {
-        // 기존 독서량 카운트 API 호출
         const res = await fetch("https://whale-reading-api.vercel.app/api/reading-stats");
         const data = await res.json();
         const { totalCompletedCount, yearStats } = data;
 
-        // 총 완독 권수 반영
         totalEl.innerHTML = `${totalCompletedCount}<span>권</span>`;
 
         if (!yearStats || yearStats.length === 0) {
@@ -168,13 +160,9 @@
           return;
         }
 
-        // 그래프 가로폭 계산을 위한 최댓값 추출
         const maxCount = Math.max(...yearStats.map(y => y.count));
-        
-        // 데이터 역순 정렬 (최신 연도가 맨 위로 오도록 설정)
         const sortedYearStats = [...yearStats].sort((a, b) => b.year - a.year);
 
-        // 이미지 image_a82ba1.png 구조대로 차트 바 동적 생성
         yearsEl.innerHTML = sortedYearStats.map(y => {
           const barWidth = maxCount > 0 ? (y.count / maxCount) * 100 : 0; 
           return `
@@ -194,7 +182,6 @@
       }
     }
 
-    // 초기화 함수 실행
     setTodayDate();
     fetchStats();
   </script>
