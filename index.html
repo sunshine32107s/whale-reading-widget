@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Reading Stats Widget - Balanced Set</title>
+  <title>Reading Stats Widget - Compact Set</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,12 +14,12 @@
       padding: 10px;
     }
     
-    /* 1. 카드 프레임 설정 */
+    /* 1. 세로 높이를 380px ➡️ 300px로 확 줄여서 휑한 공간을 원천 차단 */
     .card {
       width: 280px; 
-      height: 380px; 
+      height: 300px; 
       border-radius: 20px;
-      padding: 24px;
+      padding: 22px 24px;
       background: linear-gradient(135deg, #6bb5ff 0%, #1c52d9 60%, #0d2873 100%);
       box-shadow: 0 10px 25px rgba(13, 40, 115, 0.2); 
       position: relative;
@@ -31,9 +31,8 @@
     .title { font-size: 14px; color: #ffffff; font-weight: 700; letter-spacing: -0.3px; }
     .subtitle { font-size: 11px; color: rgba(255, 255, 255, 0.75); font-weight: 500; margin-top: 2px; }
     
-    /* 대형 총 권 수 수치 레이아웃 */
     .big-number { 
-      margin: 18px 0 12px 0; 
+      margin: 12px 0 10px 0; /* 마진도 살짝 더 컴팩트하게 조율 */
       font-size: 34px; 
       font-weight: 700; 
       color: #ffffff; 
@@ -41,21 +40,20 @@
     }
     .big-number span { font-size: 16px; font-weight: 500; opacity: 0.8; margin-left: 3px; }
     
-    /* 2. 연도별 차트 리스트 영역 (🔥 간격 밸런스 수정) */
+    /* 2. 연도별 차트 영역 (불필요한 마진 제거) */
     .years-container {
-      margin-top: 10px;
-      padding-top: 14px;
+      margin-top: 6px;
+      padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      /* 하단 고래 태그를 억지로 밀어내지 않도록 자동 높이 설정 */
+      gap: 10px; /* 연도 간격을 쫀쫀하게 조절 */
     }
 
     .year-row {
       display: flex;
       align-items: center;
-      height: 24px;
+      height: 22px;
       white-space: nowrap;
     }
     
@@ -67,7 +65,6 @@
       flex-shrink: 0;
     }
 
-    /* 게이지 바 트랙 */
     .bar-container {
       flex-grow: 1;
       height: 12px;
@@ -78,7 +75,6 @@
       overflow: hidden;
     }
 
-    /* 게이지 바 채움 */
     .bar-fill {
       position: absolute;
       top: 0;
@@ -98,10 +94,9 @@
       flex-shrink: 0;
     }
 
-    /* 3. 🔥 [하단 여백 보정] 고래고래 태그 간격 최적화 */
+    /* 3. 고래고래 태그 하단 고정 여백 최적화 */
     .whale-tag {
-      margin-top: auto; /* 연도별 리스트가 끝난 지점 다음에 유연하게 안착 */
-      padding-top: 10px; /* 리스트와의 최소 안전거리 확보 */
+      margin-top: auto; /* 카드 맨 밑바닥에 딱 달라붙도록 설정 */
       align-self: flex-end;
       font-size: 10px;
       opacity: 0.8;
